@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.java_chatroom.mapper.FriendshipMapper">
+
+    <insert id="addFriendship" parameterType="com.example.java_chatroom.model.Friendship">
+        INSERT INTO friendship (user_id, friend_id, status, created_at, updated_at)
+        VALUES (#{user_id}, #{friend_id}, #{status}, now(), now())
+    </insert>
+
+    <update id="updateFriendshipStatus" parameterType="int">
+        UPDATE friendship
+        SET status = false
+        WHERE user_id = #{applierId} AND friend_id = #{userId}
+    </update>
+
+    <delete id="deleteFriendship" parameterType="int">
+        DELETE FROM friendship
+        WHERE user_id = #{userId} AND friend_id = #{friendId}
+    </delete>
+    <delete id="deleteFriend" parameterType="int">
+        DELETE FROM friendship
+        WHERE (user_id = #{userId} AND friend_id = #{friendId}) or
+              (user_id=#{friendId} and friend_id=#{userId})
+    </delete>
+
+    <!-- 根据用户名模糊查询用户 -->
+    <select id="searchUsersByUsername" parameterType="com.example.java_chatroom.dto.UserTemp" resultType="com.example.java_chatroom.dto.SearchUser">
+        SELECT u.user_id AS userId, u.username, COALESCE(f.status, true) as status
+        FROM user u
+                 LEFT JOIN friendship f ON u.user_id = f.user_id
+        WHERE u.username LIKE CONCAT('%', #{username}, '%')
+    </select>
+
+    <select id="getUserIdsByUsername" parameterType="String" resultType="int">
+        SELECT user_id
+        FROM user
+        WHERE username LIKE CONCAT('%', #{username}, '%')
+    </select>
+
+    <select id="getFriendshipById" parameterType="int" resultType="com.example.java_chatroom.model.Friendship">
+        SELECT * FROM friendship WHERE friendship_id = #{friendshipId}
+    </select>
+    <!-- 根据用户ID和好友ID查询好友关系 -->
+    <select id="getFriendshipByUserIds" parameterType="int" resultType="com.example.java_chatroom.model.Friendship">
+        SELECT * FROM friendship
+        WHERE (user_id = #{userId} AND friend_id = #{friendId})
+           OR (user_id = #{friendId} AND friend_id = #{userId})
+            LIMIT 1
+    </select>
+    <select id="getFriendshipStatus" parameterType="int" resultType="java.lang.Boolean">
+        SELECT status
+        FROM friendship
+        WHERE (user_id = #{userId} AND friend_id = #{friendId})
+           OR (user_id = #{friendId} AND friend_id = #{userId})
+    </select>
+
+    <select id="isHaveApply" parameterType="int" resultType="java.lang.Boolean">
+        select status from friendship where friend_id=#{userId} and status =true limit 1
+    </select>
+    <select id="getAppliersList" parameterType="int" resultType="com.example.java_chatroom.dto.FriendshipAndContentDTO">
+        SELECT f.user_id AS userId, fc.username, fc.content
+        FROM friendship f
+                 JOIN friendshipContent fc ON (f.friend_id = fc.friend_id and f.user_id=fc.user_id)
+        WHERE f.friend_id = #{userId} AND f.status = true;
+    </select>
+    <select id="getFriendId" resultType="java.lang.Integer">
+        select user_id from user where username=#{friendName}
+    </select>
+
+
+    <!--    <select id="getFriendshipsByUserId" parameterType="int" resultType="com.example.java_chatroom.model.Friendship">-->
+<!--        SELECT * FROM friendship WHERE user_id = #{userId} OR friend_id = #{userId}-->
+<!--    </select>-->
+
+</mapper>
+

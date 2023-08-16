@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.java_chatroom.mapper.UserAvatarMapper">
+    <update id="updateAvatar">
+        update user_avatar set avatar_path=#{path} where userId=#{userId}
+    </update>
+    <delete id="deleteUserAvatar">
+        delete from user_avatar where userId = #{userId}
+    </delete>
+
+    <select id="getUserAvatarByUserId" parameterType="int" resultType="com.example.java_chatroom.model.UserAvatar">
+        SELECT * FROM user_avatar WHERE userId = #{userId}
+    </select>
+
+    <insert id="insertUserAvatar">
+        INSERT INTO user_avatar (userId, username, avatar_path) VALUES (#{userId}, #{username}, #{avatar_path})
+    </insert>
+
+</mapper>

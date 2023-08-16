@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.java_chatroom.mapper.FriendMapper">
+    <resultMap id="friendResultMap" type="com.example.java_chatroom.model.Friend">
+        <id property="friendId" column="user_id"/>
+        <result property="friendName" column="username"/>
+    </resultMap>
+    <select id="getFriendsByUserId" parameterType="int" resultType="com.example.java_chatroom.model.Friend">
+        SELECT u.user_id as friendId,u.username as friendName FROM user u
+                                   JOIN friendship f ON u.user_id = f.friend_id
+        WHERE f.user_id = #{user_id} AND f.status = false
+        UNION
+        SELECT u.user_id as friendId,u.username as friendName FROM user u
+                                   JOIN friendship f ON u.user_id = f.user_id
+        WHERE f.friend_id = #{user_id} AND f.status = false
+
+    </select>
+</mapper>

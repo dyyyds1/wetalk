@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.java_chatroom.mapper.MessageSessionMapper">
+    <select id="getSessionIdByUserId" resultType="java.lang.Integer">
+        select sessionId from message_session
+            where sessionId in
+        ( select sessionId from message_session_user where userId = #{userId}
+                and isDeleted = 0 )
+        order by lastTime desc
+    </select>
+    <select id="getFriendsBySessionId" resultType="com.example.java_chatroom.model.Friend">
+        select user_id as friendId,username as friendName from user
+            where user_id in
+        (select userId from message_session_user where sessionId = #{sessionId} and userId != #{selfUserId})
+    </select>
+    <select id="isHaveDeleteData" resultType="int">
+        SELECT COUNT(*) AS count
+        FROM deleteTime
+        WHERE userId = #{userId}
+          AND sessionId = #{sessionId}
+    </select>
+    <select id="getDeleteLastTime" resultType="java.util.Date">
+        SELECT lastTime
+        FROM deleteTime
+        WHERE sessionId = #{sessionId} AND userId = #{userId}
+    </select>
+    <select id="getSessionIdsByUserId" resultType="int" parameterType="int">
+        SELECT sessionId
+        FROM message_session_user
+        WHERE userId = #{userId}
+    </select>
+    <select id="getSessionIdsByFriendId" resultType="int" parameterType="int">
+        SELECT sessionId
+        FROM message_session_user
+        WHERE userId = #{friendId}
+    </select>
+    <select id="countOfNoRead" parameterType="int" resultType="int">
+        SELECT COUNT(*) AS unreadCount
+        FROM message m
+                 JOIN message_status ms ON m.messageId = ms.messageId
+        WHERE m.sessionId = #{sessionId} AND ms.userId = #{userId} AND ms.isRead = FALSE
+    </select>
+
+    <insert id="addMessageSession" useGeneratedKeys="true" keyProperty="sessionId">
+        insert into message_session values (null,now())
+    </insert>
+    
+    <insert id="addMessageSessionUser">
+        insert into message_session_user values (#{sessionId},#{userId},false)
+    </insert>
+    <insert id="addDeleteData">
+        INSERT INTO deleteTime (sessionId, userId, lastTime)
+        VALUES (#{sessionId}, #{userId}, now())
+    </insert>
+    <insert id="addNoReadMessage">
+        INSERT INTO message_status (messageId, userId, isRead)
+        VALUES (#{messageId}, #{userId}, false)
+    </insert>
+    <insert id="addReadMessage">
+        INSERT INTO message_status (messageId, userId, isRead)
+        VALUES (#{messageId}, #{userId}, true)
+    </insert>
+
+    <update id="markMessageSessionUserAsDeleted">
+        UPDATE message_session_user
+        SET isDeleted = true
+        WHERE sessionId = #{sessionId}
+          AND userId = #{userId}
+    </update>
+    <update id="updateDeleteData">
+        UPDATE deleteTime
+        SET lastTime = NOW()
+        WHERE sessionId = #{sessionId}
+          AND userId = #{userId}
+    </update>
+    <update id="markMessageSessionUserAsRestore">
+        UPDATE message_session_user
+        SET isDeleted = false
+        WHERE sessionId = #{sessionId}
+          AND userId = #{userId}
+    </update>
+    <update id="setReadMessage">
+        UPDATE message_status
+        SET isRead = true
+        WHERE messageId IN (
+            SELECT temp.messageId
+            FROM (
+                     SELECT m.messageId
+                     FROM message m
+                              JOIN message_status ms ON m.messageId = ms.messageId
+                     WHERE m.sessionId = #{sessionId} AND ms.userId = #{userId} AND ms.isRead = false
+                 ) AS temp
+        )
+    </update>
+</mapper>
