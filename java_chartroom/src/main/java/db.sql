@@ -117,8 +117,17 @@ insert into message_status values (2,2,1,false);
 drop table if exists user_avatar;
 CREATE TABLE user_avatar (
      user_avatar_id INT PRIMARY KEY AUTO_INCREMENT,
-     userId int,
+     userId INT,
      username VARCHAR(20) NOT NULL,
      avatar_path VARCHAR(200)
 );
 
+drop table if exists group_chat;
+# 群聊表的设计
+CREATE TABLE group_chat (
+    groupId INT PRIMARY KEY AUTO_INCREMENT,
+    groupName VARCHAR(16) NOT NULL,
+    creationTime DATETIME DEFAULT CURRENT_TIMESTAMP,
+    createdBy INT, -- 外键引用用户表中的 userId，表示群主
+    sessionId INT
+);

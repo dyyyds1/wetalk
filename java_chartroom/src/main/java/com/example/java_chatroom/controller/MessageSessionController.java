@@ -114,7 +114,7 @@ public class MessageSessionController {
             messageSessionMapper.updateDeleteData(sessionId,userId);
         }
     }
-
+    //to
     @GetMapping("/getSessionId")
     public Object getSessionId(int userId,int friendId){
         MessageSession messageSession=new MessageSession();
@@ -149,7 +149,6 @@ public class MessageSessionController {
     @PostMapping("/readMessage")
     public Object readMessage(int sessionId,int userId){
         messageSessionMapper.setReadMessage(sessionId,userId);
-        System.out.println("ok");
         return "ok";
     }
 
