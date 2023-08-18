@@ -1,5 +1,6 @@
 package com.example.java_chatroom.controller;
 
+import com.example.java_chatroom.mapper.GroupChatMapper;
 import com.example.java_chatroom.mapper.MessageMapper;
 import com.example.java_chatroom.mapper.MessageSessionMapper;
 import com.example.java_chatroom.model.*;
@@ -18,6 +19,9 @@ public class MessageSessionController {
 
     @Resource
     private MessageMapper messageMapper;
+
+    @Resource
+    private GroupChatMapper groupChatMapper;
 
     @GetMapping("/sessionList")
     @ResponseBody
@@ -48,7 +52,13 @@ public class MessageSessionController {
             int count=messageSessionMapper.countOfNoRead(sessionId, user.getUser_id());
             messageSession.setCountNoRead(count);
 
-
+            int isGroup=groupChatMapper.countGroupChatBySessionId(sessionId);
+            messageSession.setIsGroupChat(isGroup);
+            if (isGroup>0){
+                GroupChat groupChat=groupChatMapper.getGroupChatBySessionId(sessionId);
+                messageSession.setGroupChatName(groupChat.getGroupName());
+                messageSession.setCreateBy(groupChat.getCreatedBy());
+            }
             //遍历会话Id，查询出每个会话的最后一条信息
             String lastMessage=messageMapper.getLastMessageBySessionId(sessionId);
             //判断是否为空

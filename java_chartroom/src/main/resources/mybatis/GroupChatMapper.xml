@@ -5,4 +5,10 @@
         INSERT INTO group_chat (groupName, createdBy, sessionId)
         VALUES (#{groupName}, #{createdBy}, #{sessionId})
     </insert>
+    <select id="countGroupChatBySessionId" resultType="int">
+        SELECT COUNT(*) FROM group_chat WHERE sessionId = #{sessionId}
+    </select>
+    <select id="getGroupChatBySessionId" parameterType="int" resultType="com.example.java_chatroom.model.GroupChat">
+        SELECT * FROM group_chat WHERE sessionId = #{sessionId}
+    </select>
 </mapper>

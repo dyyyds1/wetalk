@@ -11,4 +11,10 @@ public class MessageSession {
     private String lastMessage;
 
     private int countNoRead;
+    //判断是否是群聊 1为群聊，0不为群聊
+    private int isGroupChat;
+    //群名字
+    private String GroupChatName;
+    //群主id
+    private int createBy;
 }
