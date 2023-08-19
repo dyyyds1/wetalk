@@ -66,4 +66,9 @@ public class GroupChatController {
         result.put("isGroupChat", isGroupChat);
         return result;
     }
+
+    @PostMapping("/exitGroup")
+    public void exitGroup(Integer sessionId,@SessionAttribute("user") User user){
+        groupChatMapper.exitGroup(sessionId, user.getUser_id());
+    }
 }

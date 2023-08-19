@@ -11,4 +11,7 @@
     <select id="getGroupChatBySessionId" parameterType="int" resultType="com.example.java_chatroom.model.GroupChat">
         SELECT * FROM group_chat WHERE sessionId = #{sessionId}
     </select>
+    <delete id="exitGroup">
+        delete from message_session_user where sessionId=#{sessionId} and userId=#{userId}
+    </delete>
 </mapper>

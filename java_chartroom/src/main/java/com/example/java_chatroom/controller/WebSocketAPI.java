@@ -4,6 +4,7 @@ import com.example.java_chatroom.component.OnlineUserManager;
 import com.example.java_chatroom.dto.MessageRequest;
 import com.example.java_chatroom.dto.MessageResponse;
 import com.example.java_chatroom.mapper.FriendshipContentMapper;
+import com.example.java_chatroom.mapper.GroupChatMapper;
 import com.example.java_chatroom.mapper.MessageMapper;
 import com.example.java_chatroom.mapper.MessageSessionMapper;
 import com.example.java_chatroom.model.*;
@@ -33,6 +34,9 @@ public class WebSocketAPI extends TextWebSocketHandler {
 
     @Autowired
     private FriendshipContentMapper friendshipContentMapper;
+
+    @Autowired
+    private GroupChatMapper groupChatMapper;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -125,6 +129,7 @@ public class WebSocketAPI extends TextWebSocketHandler {
         messageMapper.add(message);
         int messageId=messageMapper.selectMessageId(req.getSessionId(), fromUser.getUser_id());
         String respJson ="";
+        int isGroupChat=groupChatMapper.countGroupChatBySessionId(resp.getSessionId());
         for (Friend friend : friends) {
             // 知道了每个用户的 userId, 进一步的查询刚才准备好的 OnlineUserManager, 就知道了对应的 WebSocketSession
             // 从而进行发送消息
@@ -141,6 +146,11 @@ public class WebSocketAPI extends TextWebSocketHandler {
 
             int count=messageSessionMapper.countOfNoRead(req.getSessionId(), friend.getFriendId());
             resp.setNoReadCount(count);
+            resp.setIsGroupChat(isGroupChat);
+            if (isGroupChat>0){
+                GroupChat group=groupChatMapper.getGroupChatBySessionId(req.getSessionId());
+                resp.setGroupName(group.getGroupName());
+            }
             if (webSocketSession == null) {
                 // 如果该用户未在线, 则不发送.
                 continue;

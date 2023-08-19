@@ -13,5 +13,9 @@ public class MessageResponse {
     private String content;
 
     private int noReadCount;
+    //是否是群聊 1是群聊，0不是群聊
+    private int isGroupChat;
+    //群聊名字
+    private String groupName;
 
 }

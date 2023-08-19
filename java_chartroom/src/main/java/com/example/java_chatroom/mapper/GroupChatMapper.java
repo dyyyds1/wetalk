@@ -11,4 +11,6 @@ public interface GroupChatMapper {
     int countGroupChatBySessionId(Integer sessionId);
     //根据id获取群聊信息
     GroupChat getGroupChatBySessionId(Integer sessionId);
+
+    void exitGroup(int sessionId,int userId);
 }
