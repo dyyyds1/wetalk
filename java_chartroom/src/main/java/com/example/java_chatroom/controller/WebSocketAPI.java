@@ -131,6 +131,11 @@ public class WebSocketAPI extends TextWebSocketHandler {
         String respJson ="";
         int isGroupChat=groupChatMapper.countGroupChatBySessionId(resp.getSessionId());
         for (Friend friend : friends) {
+            //看看该用户是否删除了群聊,0未删除，1删除了
+            int isDeleteGroup=groupChatMapper.isInGroupChat(req.getSessionId(), friend.getFriendId());
+            if (isDeleteGroup>0){
+                continue;
+            }
             // 知道了每个用户的 userId, 进一步的查询刚才准备好的 OnlineUserManager, 就知道了对应的 WebSocketSession
             // 从而进行发送消息
             WebSocketSession webSocketSession = onlineUserManager.getSession(friend.getFriendId());

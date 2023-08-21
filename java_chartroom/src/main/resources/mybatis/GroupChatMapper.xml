@@ -11,7 +11,22 @@
     <select id="getGroupChatBySessionId" parameterType="int" resultType="com.example.java_chatroom.model.GroupChat">
         SELECT * FROM group_chat WHERE sessionId = #{sessionId}
     </select>
-    <delete id="exitGroup">
-        delete from message_session_user where sessionId=#{sessionId} and userId=#{userId}
+    <insert id="exitGroup">
+        insert into group_user_delete (sessionId,userId,deleteTime) values (#{sessionId},#{userId},now())
+    </insert>
+    <select id="isInGroupChat" resultType="int">
+        select COUNT(*) from group_user_delete where sessionId=#{sessionId} and userId=#{userId}
+    </select>
+    <delete id="deleteGroupUser">
+        delete from group_user_delete where sessionId=#{sessionId} and userId = #{userId}
     </delete>
+    <select id="getDeleteGroupTime" resultType="java.util.Date">
+        select deleteTime from group_user_delete where sessionId=#{sessionId} and userId = #{userId}
+    </select>
+    <select id="selectAllUsers" resultType="java.lang.Integer">
+        select userId from message_session_user where sessionId=#{sessionId}
+    </select>
+    <insert id="inviteFriend">
+        insert into message_session_user (sessionId,userId,isDeleted) values (#{sessionId},#{friendId},false)
+    </insert>
 </mapper>

@@ -34,4 +34,13 @@
         ORDER BY postTime DESC
         LIMIT 1
     </select>
+    <select id="getDeleteLastMessageBySessionId" parameterType="com.example.java_chatroom.dto.DeleteGroupTimeDTO" resultType="java.lang.String">
+        SELECT content
+        FROM message
+        WHERE sessionId = #{sessionId}
+        AND (postTime between #{startTime} and #{deleteTime})
+        ORDER BY postTime Desc
+        LIMIT 1
+    </select>
+
 </mapper>

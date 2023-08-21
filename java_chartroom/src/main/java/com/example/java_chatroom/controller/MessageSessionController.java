@@ -1,5 +1,6 @@
 package com.example.java_chatroom.controller;
 
+import com.example.java_chatroom.dto.DeleteGroupTimeDTO;
 import com.example.java_chatroom.mapper.GroupChatMapper;
 import com.example.java_chatroom.mapper.MessageMapper;
 import com.example.java_chatroom.mapper.MessageSessionMapper;
@@ -52,15 +53,28 @@ public class MessageSessionController {
             int count=messageSessionMapper.countOfNoRead(sessionId, user.getUser_id());
             messageSession.setCountNoRead(count);
 
+            //遍历会话Id，查询出每个会话的最后一条信息
+            String lastMessage = messageMapper.getLastMessageBySessionId(sessionId);
+
             int isGroup=groupChatMapper.countGroupChatBySessionId(sessionId);
             messageSession.setIsGroupChat(isGroup);
+            //如果是群聊，获取群聊信息
             if (isGroup>0){
                 GroupChat groupChat=groupChatMapper.getGroupChatBySessionId(sessionId);
                 messageSession.setGroupChatName(groupChat.getGroupName());
                 messageSession.setCreateBy(groupChat.getCreatedBy());
+                int isDeleteGroup=groupChatMapper.isInGroupChat(sessionId, user.getUser_id());
+                //删除了群聊，获取删除时间
+                if (isDeleteGroup>0){
+                    Date deleteTime=groupChatMapper.getDeleteGroupTime(sessionId,user.getUser_id());
+                    DeleteGroupTimeDTO dto=new DeleteGroupTimeDTO();
+                    dto.setDeleteTime(deleteTime);
+                    dto.setSessionId(sessionId);
+                    lastMessage=messageMapper.getDeleteLastMessageBySessionId(dto);
+                }
             }
-            //遍历会话Id，查询出每个会话的最后一条信息
-            String lastMessage=messageMapper.getLastMessageBySessionId(sessionId);
+
+
             //判断是否为空
             if (lastMessage ==null){
                 messageSession.setLastMessage("");

@@ -131,3 +131,11 @@ CREATE TABLE group_chat (
     createdBy INT, -- 外键引用用户表中的 userId，表示群主
     sessionId INT
 );
+
+drop table if exists group_user_delete;
+CREATE TABLE group_user_delete(
+      groupDeleteId INT PRIMARY KEY AUTO_INCREMENT,
+      sessionId INT,
+      userId INT,
+      deleteTime datetime
+);
