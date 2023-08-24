@@ -40,7 +40,6 @@
                  JOIN message_status ms ON m.messageId = ms.messageId
         WHERE m.sessionId = #{sessionId} AND ms.userId = #{userId} AND ms.isRead = FALSE
     </select>
-
     <insert id="addMessageSession" useGeneratedKeys="true" keyProperty="sessionId">
         insert into message_session values (null,now())
     </insert>
@@ -92,4 +91,12 @@
                  ) AS temp
         )
     </update>
+    <select id="getGroupers" resultType="int">
+        SELECT COUNT(*) FROM message_session_user
+        WHERE sessionId = #{sessionId}
+    </select>
+    <select id="getDelGroupers" resultType="int">
+        SELECT COUNT(*) FROM group_user_delete
+        WHERE sessionId = #{sessionId}
+    </select>
 </mapper>

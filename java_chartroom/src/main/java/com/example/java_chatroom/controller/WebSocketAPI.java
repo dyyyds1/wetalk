@@ -130,6 +130,10 @@ public class WebSocketAPI extends TextWebSocketHandler {
         int messageId=messageMapper.selectMessageId(req.getSessionId(), fromUser.getUser_id());
         String respJson ="";
         int isGroupChat=groupChatMapper.countGroupChatBySessionId(resp.getSessionId());
+        int totalCount=messageSessionMapper.getGroupers(resp.getSessionId());
+        int delCount=messageSessionMapper.getDelGroupers(resp.getSessionId());
+        int curCount=totalCount-delCount;
+        resp.setGroupersCount(curCount);
         for (Friend friend : friends) {
             //看看该用户是否删除了群聊,0未删除，1删除了
             int isDeleteGroup=groupChatMapper.isInGroupChat(req.getSessionId(), friend.getFriendId());
@@ -139,7 +143,6 @@ public class WebSocketAPI extends TextWebSocketHandler {
             // 知道了每个用户的 userId, 进一步的查询刚才准备好的 OnlineUserManager, 就知道了对应的 WebSocketSession
             // 从而进行发送消息
             WebSocketSession webSocketSession = onlineUserManager.getSession(friend.getFriendId());
-
             messageSessionMapper.markMessageSessionUserAsRestore(req.getSessionId(),fromUser.getUser_id());
             messageSessionMapper.markMessageSessionUserAsRestore(req.getSessionId(),friend.getFriendId());
             //添加一条消息未读,如果是自己，就不加

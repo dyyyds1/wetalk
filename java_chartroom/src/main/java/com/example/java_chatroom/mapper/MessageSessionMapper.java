@@ -43,4 +43,8 @@ public interface MessageSessionMapper {
     void setReadMessage(int sessionId, int userId);
 
     void addReadMessage(int messageId, int userId);
+
+    int getGroupers(int sessionId);
+
+    int getDelGroupers(int sessionId);
 }

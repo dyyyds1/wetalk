@@ -17,5 +17,7 @@ public class MessageResponse {
     private int isGroupChat;
     //群聊名字
     private String groupName;
+    //群人数
+    private int groupersCount;
 
 }

@@ -63,6 +63,10 @@ public class MessageSessionController {
                 GroupChat groupChat=groupChatMapper.getGroupChatBySessionId(sessionId);
                 messageSession.setGroupChatName(groupChat.getGroupName());
                 messageSession.setCreateBy(groupChat.getCreatedBy());
+                int totalCount=messageSessionMapper.getGroupers(sessionId);
+                int delCount=messageSessionMapper.getDelGroupers(sessionId);
+                int curCount=totalCount-delCount;
+                messageSession.setGroupersCount(curCount);
                 int isDeleteGroup=groupChatMapper.isInGroupChat(sessionId, user.getUser_id());
                 //删除了群聊，获取删除时间
                 if (isDeleteGroup>0){
@@ -87,11 +91,13 @@ public class MessageSessionController {
                     //如果不为空，并且最后一条消息的时间比删除时间要晚，就显示出来
                     int result = deleteLastTime.compareTo(sessionLastTime);
                     if (result <= 0) {
+                        messageSession.setLastTime(sessionLastTime);
                         messageSession.setLastMessage(lastMessage);
                         messageSessionList.add(messageSession);
                     }
                 }else {
                     //如果为空说明没有删除过，直接显示
+                    messageSession.setLastTime(sessionLastTime);
                     messageSession.setLastMessage(lastMessage);
                     messageSessionList.add(messageSession);
                 }
@@ -99,6 +105,24 @@ public class MessageSessionController {
             }
 
         }
+        Collections.sort(messageSessionList, new Comparator<MessageSession>() {
+            @Override
+            public int compare(MessageSession session1, MessageSession session2) {
+                Date lastTime1 = session1.getLastTime();
+                Date lastTime2 = session2.getLastTime();
+                if (lastTime1 == null && lastTime2 == null) {
+                    return 0;
+                }
+                if (lastTime1 == null) {
+                    return 1;
+                }
+                if (lastTime2 == null) {
+                    return -1;
+                }
+                return lastTime2.compareTo(lastTime1); // 降序排序
+            }
+        });
+        System.out.println(messageSessionList);
         return messageSessionList;
     }
 

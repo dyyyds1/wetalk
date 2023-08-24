@@ -2,6 +2,7 @@ package com.example.java_chatroom.model;
 
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -17,4 +18,9 @@ public class MessageSession {
     private String GroupChatName;
     //群主id
     private int createBy;
+
+    //群人数
+    private int groupersCount;
+
+    private Date lastTime;
 }

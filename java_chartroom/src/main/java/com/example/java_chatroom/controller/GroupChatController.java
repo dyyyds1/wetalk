@@ -2,6 +2,7 @@ package com.example.java_chatroom.controller;
 
 import com.example.java_chatroom.dto.FriendshipAndContentDTO;
 import com.example.java_chatroom.dto.GroupChatRequest;
+import com.example.java_chatroom.dto.InviteFriendRequest;
 import com.example.java_chatroom.dto.ShowUserDTO;
 import com.example.java_chatroom.mapper.*;
 import com.example.java_chatroom.model.*;
@@ -132,13 +133,23 @@ public class GroupChatController {
 
     //邀请新的好友加入群聊
     @PostMapping ("/inviteFriend")
-    public void inviteFriend(int sessionId,int friendId){
-        int count = groupChatMapper.isInGroupChat(sessionId, friendId);
-        if (count>0){
-            groupChatMapper.deleteGroupUser(sessionId, friendId);
-            return;
+    @ResponseBody
+    public Map<String,Integer> inviteFriend(@RequestBody InviteFriendRequest inviteFriendRequest){
+
+        int sessionId=inviteFriendRequest.getSessionId();
+        List<Integer> friendIds=inviteFriendRequest.getFriendIds();
+        System.out.println("friendIds"+friendIds);
+        for (int friendId:friendIds) {
+            int count = groupChatMapper.isInGroupChat(sessionId, friendId);
+            if (count > 0) {
+                groupChatMapper.deleteGroupUser(sessionId, friendId);
+                continue;
+            }
+            groupChatMapper.inviteFriend(sessionId, friendId);
         }
-        groupChatMapper.inviteFriend(sessionId, friendId);
+        Map<String,Integer> map=new HashMap<>();
+        map.put("sessionId",sessionId);
+        return map;
     }
 
     //搜索未加入群聊的用户
