@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>WeTalk</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Raleway:300,600" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel='stylesheet' href='css/libs_twitter-bootstrap_3.3.7_css_bootstrap.min.css'>
+   <link rel="stylesheet" href="css/newlogin.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="container">
+
+   <div class="tmp"></div>
+   <section id="formHolder">
+
+      <div class="row">
+
+         <!-- Brand Box -->
+         <div class="col-sm-6 brand">
+            <a href="#" class="logo">WT <span>.</span></a>
+
+            <div class="heading">
+               <h2>WeTalk</h2>
+               <p>Your Right Choice</p>
+            </div>
+
+            <div class="success-msg">
+               <p>Great! You are one of our members now</p>
+               <a href="#" class="profile">Your Profile</a>
+            </div>
+         </div>
+
+
+         <!-- Form Box -->
+         <div class="col-sm-6 form">
+
+            <!-- Login Form -->
+            <div class="login form-peice">
+               <form class="login-form" action="/login" method="post">
+                  <div class="form-group">
+                     <label for="loginUsername">Username</label>
+                     <input type="text" name="username" id="loginUsername" required>
+                  </div>
+
+                  <div class="form-group">
+                     <label for="loginPassword">Password</label>
+                     <input type="password" name="password" id="loginPassword" required>
+                  </div>
+
+                  <div class="CTA">
+                     <input type="submit" value="Login">
+                     <a href="#" class="switch">I'm New</a>
+                  </div>
+               </form>
+            </div><!-- End Login Form -->
+
+
+            <!-- Signup Form -->
+            <div class="signup form-peice switched">
+               <form class="signup-form" action="/register" method="post">
+
+                  <div class="form-group">
+                     <label for="name">username</label>
+                     <input type="text" name="username" id="name" class="name">
+                     <span class="error"></span>
+                  </div>
+
+                  <div class="form-group ea">
+                     <label for="email">Email Adderss</label>
+                     <input type="email" name="email" id="email" class="email">
+                     <span class="error"></span>
+                     <button class="verification-button" id="verification-button">获取验证码</button>
+                  </div>
+
+
+                  <div class="form-group">
+                     <label for="verification">verification</label>
+                     <input type="text" name="verificationCode" id="verification">
+                  </div>
+
+                  <div class="form-group">
+                     <label for="password">Password</label>
+                     <input type="password" name="password" id="password" class="pass">
+                     <span class="error"></span>
+                  </div>
+
+                  <div class="form-group">
+                     <label for="passwordCon">Confirm Password</label>
+                     <input type="password" name="passwordCon" id="passwordCon" class="passConfirm">
+                     <span class="error"></span>
+                  </div>
+
+                  <div class="CTA">
+                     <input type="submit" value="Signup Now" id="submit">
+                     <a href="#" class="switch">I have an account</a>
+                  </div>
+               </form>
+            </div><!-- End Signup Form -->
+         </div>
+      </div>
+
+   </section>
+
+
+
+
+</div>
+<!-- partial -->
+
+   <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+   <script  src="js/newlogin.js"></script>
+   <script>
+      // Listen to form submission
+      $('.login-form').submit(function(event) {
+         // Prevent page refresh on form submit
+         event.preventDefault();
+
+         // Get form data
+         var formData = $(this).serialize();
+
+         // Send AJAX POST request to the backend
+         $.ajax({
+            type: 'POST',
+            url: '/login',
+            data: formData,
+            success: function(body) {
+               // 处理响应
+               if (body && body.user_id > 0){
+                  //登录成功
+                  alert("登录成功!");
+                  location.assign('/client.html');
+               }else {
+                  alert("登录失败!");
+               }
+            },
+            error: function(error) {
+               alert("登录失败!");
+            }
+         });
+      });
+
+      let emailClick = document.querySelector('#verification-button');
+      emailClick.onclick=function (){
+         // 获取邮箱地址
+         let email = document.querySelector('#email').value;
+
+         console.log(email);
+         // 发送AJAX请求
+         $.ajax({
+            type: 'POST',
+            url: '/sendVerificationCode', // 后端处理发送验证码请求的URL
+            data: {
+               toEmail: email,
+            },
+
+            success: function (re) {
+               // 请求成功后的处理，可以根据后端返回的结果进行相应操作
+               alert("验证码发送成功，请查看您的邮箱。");
+               console.log(re)
+            },
+            error: function (xhr, status, error) {
+               // 请求失败的处理
+               alert("验证码发送失败，请稍后重试。");
+            }
+         });
+      }
+
+
+      // 监听注册表单的提交事件
+
+      let submit=document.querySelector('#submit');
+      submit.onclick=function () {
+
+         // 获取表单数据
+         var formData = $(".signup-form").serialize();
+
+         // 发送AJAX请求
+         $.ajax({
+            type: 'POST',
+            url: '/register', // 后端处理注册请求的URL
+            data: formData,
+            success: function (response) {
+               // 请求成功后的处理，可以根据后端返回的结果进行相应操作
+               if (response && response.user_id > 0) {
+                  // 注册成功
+
+                  // 可以根据后端的返回值进行相应的操作，例如显示成功消息、跳转页面等
+                  // 在此示例中，我们只显示一个警告框
+                  $('.signup, .login').addClass('switched');
+
+                  setTimeout(function () {
+                     $('.signup, .login').hide();
+                  }, 700);
+                  setTimeout(function () {
+                     $('.brand').addClass('active');
+                  }, 300);
+                  setTimeout(function () {
+                     $('.heading').addClass('active');
+                  }, 600);
+                  setTimeout(function () {
+                     $('.success-msg p').addClass('active');
+                  }, 900);
+                  setTimeout(function () {
+                     $('.success-msg a').addClass('active');
+                  }, 1050);
+                  setTimeout(function () {
+                     $('.form').hide();
+                  }, 700);
+               } else {
+                  // 注册失败
+                  alert("注册失败!");
+               }
+            },
+            error: function (xhr, status, error) {
+               // 请求失败的处理
+               alert("注册失败!");
+            }
+         });
+
+      }
+   </script>
+
+</body>
+</html>

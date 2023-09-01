@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>wetalk</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/client.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
+</head>
+<body>
+    <div class="nav">
+        <div class="nav-logo"></div>
+    </div>
+    <div class="cover"></div>
+    <div class="client-container">
+            <!-- 中间聊天区域  -->
+        <div class="main">
+            <!-- 左侧区域显示用户列表和会话列表 -->
+            <div class="left">
+                <!-- 用户头像-->
+                <img id="avatarImage" src="avatars/default-avatar.png" alt=""></img>
+                <div class="avatarModal" id="avatarModal">
+                    <div class="showImg" id="showImg">查看头像</div>
+                    <div class="changeImg" id="changeImg">更换头像</div>
+                    <div class="close" id="closeAvatarModal">取消</div>
+                </div>
+                <!-- 拉好友群聊页面 -->
+                <div class="groupChatPage" id="groupChatPage">
+                    <div class="friendList">
+                        <h2>好友列表</h2>
+                        <ul>
+
+                        </ul>
+                    </div>
+                    <div class="selectedFriends">
+                        <h2>已选择的好友</h2>
+                        <ul class="scrollable-list">
+                            <!-- 选择的好友会在这里显示 -->
+                        </ul>
+                    </div>
+                    <div class="choice">
+                        <button class="submit">确定</button>
+                        <button class="cancel">取消</button>
+                    </div>
+                </div>
+                <!--这个用来展示未加入此群的好友列表 -->
+                <div class="showNoInG" id="showNoInG">
+                    <div class="noInGList">
+                        <h2>好友列表</h2>
+                        <!--这里放搜索出来的好友 -->
+                        <ul>
+
+                        </ul>
+                    </div>
+                    <div class="choice">
+                        <button class="submit">确定</button>
+                        <button class="cancel">取消</button>
+                    </div>
+                </div>
+                <div class="inputGroupChatName" id="inputGroupChatName">
+                    <input id="groupChatName" placeholder="输入群名">
+                    <button class="yes">确定</button>
+                    <button class="no">取消</button>
+                </div>
+                <!-- 头像展示框-->
+                <div id="myModal" class="modal">
+                    <span class="close">&times;</span>
+                    <img id="modalImg" src="" alt="头像">
+                </div>
+                <!-- 遮罩层 -->
+                <div class="overlay" id="overlay"></div>
+                <div class="overlay2" id="overlay2"></div>
+                <!-- 展示群聊好友框 -->
+                <div class="showUsers">
+                    <span class="close">&times;</span>
+                    <ul class="userList">
+                        <li class="userBox">
+                            <img src="avatars/default-avatar.png">
+                            <div class="usernameDiv">zhangsan</div>
+                        </li>
+                        <li class="userBox">
+                            <img src="avatars/default-avatar.png">
+                            <div class="usernameDiv">zhangsan</div>
+                        </li>
+                        <li class="userBox">
+                            <img src="avatars/default-avatar.png">
+                            <div class="usernameDiv">zhangsan</div>
+                        </li>
+                        <li class="userBox">
+                            <img src="avatars/default-avatar.png">
+                            <div class="usernameDiv">zhangsan</div>
+                        </li>
+                        <li class="userBox">
+                            <img src="avatars/default-avatar.png">
+                            <div class="usernameDiv">zhangsan</div>
+                        </li>
+                    </ul>
+                </div>
+                <!--当前登陆的用户名  -->
+                <div class="user">
+
+                </div>
+                <div class="search">
+                    <!--  搜索页面搜索框   -->
+                    <input type="text" id="searchInput" placeholder="搜索">
+                    <button id="searchButton"></button>
+                </div>
+                <div class="tab">
+                <!-- 会话列表标签   -->
+                    <div class="tab-session"></div>
+                <!-- 好友列表标签   -->
+                    <div class="tab-friend" id="getFriend"></div>
+                    <div class="tab-applyFriend" id="tab-apply"></div>
+                </div>
+                <!--会话列表-->
+                <ul class="list" id="session-list">
+
+                </ul>
+                <!-- 好友列表 -->
+                <ul class="list hide" id="friend-list">
+
+                </ul>
+            </div>
+            <!-- 右侧区域显示聊天编辑框 -->
+            <div class="right" id="right">
+                <!-- 会话标题-->
+                <div class="title"></div>
+                <!--消息区-->
+                <div class="message-show">
+                    <!-- 一个消息行-->
+<!--                    <div class="message message-left">-->
+<!--                        &lt;!&ndash; 一个消息块&ndash;&gt;-->
+<!--                        <div class="box">-->
+<!--                            <h4>lisi </h4>-->
+<!--                            <p>今天吃啥</p>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    <!-- 一个消息行-->
+<!--                    <div class="message message-right">-->
+<!--                        &lt;!&ndash; 一个消息块&ndash;&gt;-->
+<!--                        <div class="box">-->
+<!--                            <h4>zhangsan</h4>-->
+<!--                            <p>随便</p>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
+                <textarea class="message-input"></textarea>
+                <!--发送按钮-->
+                <div class="ctrl">
+                    <button>发送</button>
+                </div>
+            </div>
+            <div class="hide-right" id="hide-right">
+                <div class="searchUserResult">用户搜索结果</div>
+                <ul class="UserResult" id="Users">
+
+                </ul>
+            </div>
+            <div class="hide-right2" id="hide-right2">
+                <div class="searchApply">待办的好友申请</div>
+                <ul class="ApplyList" id="Appliers"></ul>
+            </div>
+            <div class="right-logo" id="rightLogo">
+
+            </div>
+        </div>
+    </div>
+
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="js/client.js"></script>
+</body>
+</html>
